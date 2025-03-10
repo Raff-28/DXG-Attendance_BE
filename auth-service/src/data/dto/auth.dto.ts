@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { RegisterEntity } from "../entity/auth.entity.js";
+import { Role } from "../model/user.model.js";
 import { loginSchema, registerSchema } from "./auth.schema.js";
 
 export class RegisterBody {
@@ -72,5 +73,14 @@ export class LoginResponseData {
 
   constructor(token: string) {
     this.token = token;
+  }
+}
+
+export class CredentialsResponseData {
+  id: number;
+  role: Role;
+  constructor(id: number, role: Role) {
+    this.id = id;
+    this.role = role;
   }
 }

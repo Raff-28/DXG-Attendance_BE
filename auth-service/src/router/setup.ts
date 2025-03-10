@@ -8,6 +8,7 @@ export function setupRouter(c: AuthController): Express {
   r.use(express.json());
   r.post("/register", validateData(registerSchema), c.register.bind(c));
   r.post("/login", validateData(loginSchema), c.login.bind(c));
+  r.get("/credentials", c.getCredentials.bind(c));
 
   return r;
 }

@@ -4,11 +4,7 @@ import {
   ResultSetHeader,
   RowDataPacket,
 } from "mysql2/promise";
-import {
-  LoginEntity,
-  RegisterEntity,
-  UserEntity,
-} from "../data/entity/auth.entity.js";
+import { RegisterEntity, UserEntity } from "../data/entity/auth.entity.js";
 import { UserModel } from "../data/model/user.model.js";
 import { ErrInternalServer, ErrUserDoesNotExist } from "../errors/sentinel.js";
 
@@ -26,9 +22,10 @@ export interface AuthRepository {
     connection?: PoolConnection
   ): Promise<void>;
   selectUserByEmail(
-    loginEntity: LoginEntity,
+    email: string,
     connection?: PoolConnection
   ): Promise<UserEntity>;
+  selectUserById(id: number, connection?: PoolConnection): Promise<UserEntity>;
 }
 
 export class AuthRepositoryImpl implements AuthRepository {
@@ -95,15 +92,32 @@ export class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  async selectUserByEmail(
-    loginEntity: LoginEntity,
-    connection?: PoolConnection
-  ) {
+  async selectUserByEmail(email: string, connection?: PoolConnection) {
     try {
       const conn = connection || this.db;
       const [rows] = await conn.execute<UserModel[]>(
         "SELECT id, email, password, role FROM users WHERE email = ? LIMIT 1",
-        [loginEntity.email]
+        [email]
+      );
+      if (rows.length === 0) {
+        throw ErrUserDoesNotExist;
+      }
+      const user = rows[0];
+      return new UserEntity(user.id, user.email, user.password, user.role);
+    } catch (e) {
+      if (e === ErrUserDoesNotExist) {
+        throw e;
+      }
+      throw ErrInternalServer;
+    }
+  }
+
+  async selectUserById(id: number, connection?: PoolConnection) {
+    try {
+      const conn = connection || this.db;
+      const [rows] = await conn.execute<UserModel[]>(
+        "SELECT id, email, password, role FROM users WHERE id = ? LIMIT 1",
+        [id]
       );
       if (rows.length === 0) {
         throw ErrUserDoesNotExist;

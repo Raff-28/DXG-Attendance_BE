@@ -3,6 +3,7 @@ import { Jwt } from "../../pkg/jwt/jwt.js";
 import {
   LoginEntity,
   RegisterEntity,
+  UserEntity,
   UserToken,
 } from "../data/entity/auth.entity.js";
 import {
@@ -16,6 +17,7 @@ import { TransactionManager } from "../repository/transactor.js";
 export interface AuthUsecase {
   register(registerEntity: RegisterEntity): Promise<RegisterEntity>;
   login(loginEntity: LoginEntity): Promise<UserToken>;
+  getUserData(token: string): Promise<UserEntity>;
 }
 
 export class AuthUseCaseImpl implements AuthUsecase {
@@ -68,7 +70,9 @@ export class AuthUseCaseImpl implements AuthUsecase {
 
   async login(loginEntity: LoginEntity) {
     try {
-      const user = await this.authRepository.selectUserByEmail(loginEntity);
+      const user = await this.authRepository.selectUserByEmail(
+        loginEntity.email
+      );
       const isPasswordMatch = await this.bcrypt.compare(
         loginEntity.password,
         user.password
@@ -82,6 +86,16 @@ export class AuthUseCaseImpl implements AuthUsecase {
       if (e === ErrUserDoesNotExist) {
         throw ErrInvalidEmailOrPassword;
       }
+      throw e;
+    }
+  }
+
+  async getUserData(token: string) {
+    try {
+      const payload = this.jwt.verify(token);
+      const user = await this.authRepository.selectUserById(payload.id);
+      return user;
+    } catch (e) {
       throw e;
     }
   }

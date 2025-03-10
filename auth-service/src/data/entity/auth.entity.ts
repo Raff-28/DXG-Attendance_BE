@@ -1,4 +1,8 @@
-import { LoginResponseData, RegisterBody } from "../dto/auth.dto.js";
+import {
+  CredentialsResponseData,
+  LoginResponseData,
+  RegisterBody,
+} from "../dto/auth.dto.js";
 import { Role } from "../model/user.model.js";
 
 export class RegisterEntity {
@@ -61,6 +65,10 @@ export class UserEntity {
     this.email = email;
     this.password = password;
     this.role = role;
+  }
+
+  toCredentialsDto() {
+    return new CredentialsResponseData(this.id, this.role);
   }
 }
 
