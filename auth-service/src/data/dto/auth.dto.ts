@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { RegisterEntity } from "../entity/auth.entity.js";
-import { registerSchema } from "./auth.schema.js";
+import { loginSchema, registerSchema } from "./auth.schema.js";
 
 export class RegisterBody {
   id: number;
@@ -50,5 +50,27 @@ export class RegisterBody {
       this.department,
       this.phone_number
     );
+  }
+}
+
+export class LoginRequestBody {
+  email: string;
+  password: string;
+
+  constructor(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
+
+  static fromSchema(data: z.infer<typeof loginSchema>) {
+    return new LoginRequestBody(data.email, data.password);
+  }
+}
+
+export class LoginResponseData {
+  token: string;
+
+  constructor(token: string) {
+    this.token = token;
   }
 }

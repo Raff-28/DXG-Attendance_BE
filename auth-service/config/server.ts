@@ -1,4 +1,5 @@
 import { BcryptImpl } from "../pkg/bcrypt/bcrypt.js";
+import { JwtImpl } from "../pkg/jwt/jwt.js";
 import { AuthController } from "../src/controller/auth.controller.js";
 import { AuthRepositoryImpl } from "../src/repository/auth.repository.js";
 import { TransactionManagerImpl } from "../src/repository/transactor.js";
@@ -14,7 +15,8 @@ export async function startServer() {
     new AuthUseCaseImpl(
       new AuthRepositoryImpl(db),
       new TransactionManagerImpl(db),
-      new BcryptImpl()
+      new BcryptImpl(),
+      new JwtImpl()
     )
   );
 

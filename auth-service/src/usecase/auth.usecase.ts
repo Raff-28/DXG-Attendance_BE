@@ -1,26 +1,38 @@
 import { Bcrypt } from "../../pkg/bcrypt/bcrypt.js";
-import { RegisterEntity } from "../data/entity/auth.entity.js";
-import { ErrEmailAlreadyExist } from "../errors/sentinel.js";
+import { Jwt } from "../../pkg/jwt/jwt.js";
+import {
+  LoginEntity,
+  RegisterEntity,
+  UserToken,
+} from "../data/entity/auth.entity.js";
+import {
+  ErrEmailAlreadyExist,
+  ErrInvalidEmailOrPassword,
+  ErrUserDoesNotExist,
+} from "../errors/sentinel.js";
 import { AuthRepository } from "../repository/auth.repository.js";
 import { TransactionManager } from "../repository/transactor.js";
 
 export interface AuthUsecase {
   register(registerEntity: RegisterEntity): Promise<RegisterEntity>;
-  login(): Promise<void>;
+  login(loginEntity: LoginEntity): Promise<UserToken>;
 }
 
 export class AuthUseCaseImpl implements AuthUsecase {
   private authRepository: AuthRepository;
   private transactionManager: TransactionManager;
   private bcrypt: Bcrypt;
+  private jwt: Jwt;
   constructor(
     authRepository: AuthRepository,
     transactionManager: TransactionManager,
-    bcrypt: Bcrypt
+    bcrypt: Bcrypt,
+    jwt: Jwt
   ) {
     this.authRepository = authRepository;
     this.transactionManager = transactionManager;
     this.bcrypt = bcrypt;
+    this.jwt = jwt;
   }
 
   async register(registerEntity: RegisterEntity): Promise<RegisterEntity> {
@@ -54,5 +66,23 @@ export class AuthUseCaseImpl implements AuthUsecase {
     }
   }
 
-  async login() {}
+  async login(loginEntity: LoginEntity) {
+    try {
+      const user = await this.authRepository.selectUserByEmail(loginEntity);
+      const isPasswordMatch = await this.bcrypt.compare(
+        loginEntity.password,
+        user.password
+      );
+      if (!isPasswordMatch) {
+        throw ErrInvalidEmailOrPassword;
+      }
+      const tokenString = this.jwt.sign({ id: user.id }, { expiresIn: "1d" });
+      return new UserToken(tokenString);
+    } catch (e) {
+      if (e === ErrUserDoesNotExist) {
+        throw ErrInvalidEmailOrPassword;
+      }
+      throw e;
+    }
+  }
 }

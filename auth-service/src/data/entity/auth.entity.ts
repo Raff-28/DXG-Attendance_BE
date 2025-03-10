@@ -1,4 +1,5 @@
-import { RegisterBody } from "../dto/auth.dto.js";
+import { LoginResponseData, RegisterBody } from "../dto/auth.dto.js";
+import { Role } from "../model/user.model.js";
 
 export class RegisterEntity {
   id: number;
@@ -37,5 +38,46 @@ export class RegisterEntity {
       this.phoneNumber,
       this.id
     );
+  }
+}
+
+export class LoginEntity {
+  email: string;
+  password: string;
+
+  constructor(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
+}
+
+export class UserEntity {
+  id: number;
+  email: string;
+  password: string;
+  role: Role;
+  constructor(id: number, email: string, password: string, role: Role) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.role = role;
+  }
+}
+
+export class UserToken {
+  token: string;
+  constructor(token: string) {
+    this.token = token;
+  }
+
+  toDto() {
+    return new LoginResponseData(this.token);
+  }
+}
+
+export class UserTokenPayload {
+  id: number;
+  constructor(id: number) {
+    this.id = id;
   }
 }

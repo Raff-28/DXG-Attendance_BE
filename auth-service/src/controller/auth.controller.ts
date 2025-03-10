@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { RegisterBody } from "../data/dto/auth.dto.js";
+import {
+  LoginRequestBody,
+  LoginResponseData,
+  RegisterBody,
+} from "../data/dto/auth.dto.js";
 import { AppResponse } from "../data/dto/response.js";
 import { ErrInternalServer } from "../errors/sentinel.js";
 import { AuthUsecase } from "../usecase/auth.usecase.js";
@@ -30,6 +34,22 @@ export class AuthController {
     }
   }
   async login(req: Request, res: Response) {
-    res.send("Login");
+    try {
+      const reqBody = req.body;
+      const validatedBody = LoginRequestBody.fromSchema(reqBody);
+      const result = await this.authUseCase.login(validatedBody);
+      const response: AppResponse<LoginResponseData> = {
+        data: result.toDto(),
+      };
+      res.status(StatusCodes.OK).json(response);
+    } catch (e) {
+      let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
+      if (e instanceof Error) {
+        if (e !== ErrInternalServer) {
+          statusCode = StatusCodes.BAD_REQUEST;
+        }
+        res.status(statusCode).json({ message: e.message });
+      }
+    }
   }
 }

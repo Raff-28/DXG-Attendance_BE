@@ -1,6 +1,6 @@
 import { RowDataPacket } from "mysql2";
 
-type Role = "employee" | "admin";
+export type Role = "employee" | "admin";
 
 export interface UserModel extends RowDataPacket {
   id: number;

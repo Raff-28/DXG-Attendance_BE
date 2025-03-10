@@ -27,3 +27,8 @@ export const registerSchema = z.object({
     .min(10)
     .regex(/^\d+$/, { message: "Must be a valid number" }),
 });
+
+export const loginSchema = z.object({
+  email: z.string().nonempty().email(),
+  password: z.string().nonempty(),
+});
