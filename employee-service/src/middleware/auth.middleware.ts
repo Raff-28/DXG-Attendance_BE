@@ -20,9 +20,6 @@ export function authenticate(requiredRole: Role) {
           },
         }
       );
-      if (response.data.message) {
-        throw new Error(response.data.message);
-      }
       if (response.data.data?.role !== requiredRole) {
         throw ErrUnauthorized;
       }
@@ -35,7 +32,7 @@ export function authenticate(requiredRole: Role) {
         e.response?.data.message
       ) {
         res
-          .status(ErrUnauthorized.status)
+          .status(e.response.status)
           .send({ message: e.response.data.message });
       } else {
         res
