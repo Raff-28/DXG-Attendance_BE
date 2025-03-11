@@ -13,7 +13,7 @@ export function authenticate(requiredRole: Role) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const response = await axios.get<AppResponse<CredentialsResponseData>>(
-        `http://localhost:${process.env.AUTH_SERVICE_PORT}/credentials`,
+        `${process.env.AUTH_SERVICE_BASE_URL}/credentials`,
         {
           headers: {
             Authorization: req.headers.authorization,
