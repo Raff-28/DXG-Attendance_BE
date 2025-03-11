@@ -6,7 +6,13 @@ export function setupRouter(employeeController: EmployeeController): Express {
   const r = express();
   r.use(express.json());
 
-  r.route("/employee/:id").delete(
+  r.get(
+    "/employees",
+    authenticate("admin"),
+    employeeController.getEmployees.bind(employeeController)
+  );
+  r.delete(
+    "/employees/:id",
     authenticate("admin"),
     employeeController.deleteEmployee.bind(employeeController)
   );

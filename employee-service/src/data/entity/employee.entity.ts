@@ -1,3 +1,5 @@
+import { EmployeeResponseData } from "../dto/employee.dto.js";
+
 export class EmployeeEntity {
   id: number;
   userId: number;
@@ -20,5 +22,16 @@ export class EmployeeEntity {
     this.position = position;
     this.department = department;
     this.phone = phone;
+  }
+
+  toDto() {
+    return new EmployeeResponseData(
+      this.id,
+      this.userId,
+      this.fullName,
+      this.position,
+      this.department,
+      this.phone
+    );
   }
 }

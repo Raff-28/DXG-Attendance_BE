@@ -4,6 +4,7 @@ import { EmployeeModel } from "../data/model/employee.model.js";
 import { ErrEmployeeNotFound, ErrInternalServer } from "../errors/http.js";
 
 export interface EmployeeRepository {
+  selectEmployees(connection?: PoolConnection): Promise<EmployeeEntity[]>;
   selectEmployeeById(
     id: number,
     connection?: PoolConnection
@@ -15,6 +16,31 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
   private db: Pool;
   constructor(db: Pool) {
     this.db = db;
+  }
+
+  async selectEmployees(
+    connection?: PoolConnection
+  ): Promise<EmployeeEntity[]> {
+    try {
+      const conn = connection || this.db;
+      const [rows] = await conn.execute<EmployeeModel[]>(
+        "SELECT * FROM employees WHERE deleted_at IS NULL"
+      );
+      const employees = rows.map(
+        (employee) =>
+          new EmployeeEntity(
+            employee.id,
+            employee.user_id,
+            employee.fullname,
+            employee.position,
+            employee.department,
+            employee.phone
+          )
+      );
+      return employees;
+    } catch (e) {
+      throw ErrInternalServer;
+    }
   }
 
   async selectEmployeeById(

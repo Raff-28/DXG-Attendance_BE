@@ -1,9 +1,11 @@
+import { EmployeeEntity } from "../data/entity/employee.entity.js";
 import { ErrUserNotFound } from "../errors/http.js";
 import { EmployeeRepository } from "../repository/employee.repository.js";
 import { TransactionManager } from "../repository/transactor.js";
 import { UserRepository } from "../repository/user.repository.js";
 
 export interface EmployeeUsecase {
+  getEmployees(): Promise<EmployeeEntity[]>;
   deleteEmployee(id: number): Promise<void>;
 }
 
@@ -19,6 +21,15 @@ export class EmployeeUsecaseImpl implements EmployeeUsecase {
     this.employeeRepository = employeeRepository;
     this.userRepository = userRepository;
     this.transactionManager = transactionManager;
+  }
+
+  async getEmployees(): Promise<EmployeeEntity[]> {
+    try {
+      const employees = await this.employeeRepository.selectEmployees();
+      return employees;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async deleteEmployee(id: number): Promise<void> {

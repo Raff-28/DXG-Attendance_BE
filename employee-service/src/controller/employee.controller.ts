@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { EmployeeResponseData } from "../data/dto/employee.dto.js";
+import { AppResponse } from "../data/dto/response.js";
 import { ErrInternalServer, ErrInvalidId, HttpError } from "../errors/http.js";
 import { EmployeeUsecase } from "../usecase/employee.usecase.js";
 
@@ -7,6 +9,24 @@ export class EmployeeController {
   private employeeUsecase: EmployeeUsecase;
   constructor(employeeUsecase: EmployeeUsecase) {
     this.employeeUsecase = employeeUsecase;
+  }
+
+  async getEmployees(_req: Request, res: Response) {
+    try {
+      const employees = await this.employeeUsecase.getEmployees();
+      const response: AppResponse<EmployeeResponseData[]> = {
+        data: employees.map((e) => e.toDto()),
+      };
+      res.status(StatusCodes.OK).json(response);
+    } catch (e) {
+      if (e instanceof HttpError) {
+        res.status(e.status).send({ message: e.message });
+      } else {
+        res
+          .status(ErrInternalServer.status)
+          .json({ message: ErrInternalServer.message });
+      }
+    }
   }
 
   async deleteEmployee(req: Request, res: Response) {
@@ -22,8 +42,9 @@ export class EmployeeController {
       if (e instanceof HttpError) {
         res.status(e.status).send({ message: e.message });
       } else {
-        const e = ErrInternalServer;
-        res.status(e.status).json({ message: e.message });
+        res
+          .status(ErrInternalServer.status)
+          .json({ message: ErrInternalServer.message });
       }
     }
   }
