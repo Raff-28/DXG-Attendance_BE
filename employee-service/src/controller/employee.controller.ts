@@ -29,6 +29,29 @@ export class EmployeeController {
     }
   }
 
+  async getEmployeeDetails(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const idNumber = parseInt(id);
+      if (isNaN(idNumber)) {
+        throw ErrInvalidId;
+      }
+      const employee = await this.employeeUsecase.getEmployeeDetails(idNumber);
+      const response: AppResponse<EmployeeResponseData> = {
+        data: employee.toDto(),
+      };
+      res.status(StatusCodes.OK).json(response);
+    } catch (e) {
+      if (e instanceof HttpError) {
+        res.status(e.status).send({ message: e.message });
+      } else {
+        res
+          .status(ErrInternalServer.status)
+          .json({ message: ErrInternalServer.message });
+      }
+    }
+  }
+
   async deleteEmployee(req: Request, res: Response) {
     try {
       const { id } = req.params;

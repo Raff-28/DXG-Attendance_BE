@@ -6,6 +6,7 @@ import { UserRepository } from "../repository/user.repository.js";
 
 export interface EmployeeUsecase {
   getEmployees(): Promise<EmployeeEntity[]>;
+  getEmployeeDetails(id: number): Promise<EmployeeEntity>;
   deleteEmployee(id: number): Promise<void>;
 }
 
@@ -27,6 +28,15 @@ export class EmployeeUsecaseImpl implements EmployeeUsecase {
     try {
       const employees = await this.employeeRepository.selectEmployees();
       return employees;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getEmployeeDetails(id: number): Promise<EmployeeEntity> {
+    try {
+      const employee = await this.employeeRepository.selectEmployeeById(id);
+      return employee;
     } catch (e) {
       throw e;
     }
