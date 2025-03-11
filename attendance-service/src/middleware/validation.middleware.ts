@@ -11,7 +11,6 @@ export function validateData(
     try {
       if (isFormData) {
         const data = {
-          employee_id: Number(res.locals.employeeId),
           photo: req.file,
         };
         req.body = schema.parse(data);

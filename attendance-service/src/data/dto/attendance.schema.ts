@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const postAttendanceSchema = z.object({
-  employee_id: z.number(),
   photo: z
     .object({
       mimetype: z.enum(["image/jpeg", "image/png", "image/jpg"]),

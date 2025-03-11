@@ -16,6 +16,10 @@ export function setupRouter(employeeController: EmployeeController): Express {
     authenticate("admin"),
     employeeController.getEmployeeDetails.bind(employeeController)
   );
+  r.get(
+    "/employees/by-user/:userId",
+    employeeController.getEmployeeByUserId.bind(employeeController)
+  );
   r.delete(
     "/employees/:id",
     authenticate("admin"),

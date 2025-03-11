@@ -10,6 +10,10 @@ export interface EmployeeRepository {
     connection?: PoolConnection
   ): Promise<EmployeeEntity>;
   deleteEmployee(id: number, connection?: PoolConnection): Promise<void>;
+  selectEmployeeByUserId(
+    userId: number,
+    connection?: PoolConnection
+  ): Promise<EmployeeEntity>;
 }
 
 export class EmployeeRepositoryImpl implements EmployeeRepository {
@@ -83,6 +87,36 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
       );
     } catch (e) {
       throw e;
+    }
+  }
+
+  async selectEmployeeByUserId(
+    userId: number,
+    connection?: PoolConnection
+  ): Promise<EmployeeEntity> {
+    try {
+      const conn = connection || this.db;
+      const [rows] = await conn.execute<EmployeeModel[]>(
+        "SELECT * FROM employees WHERE user_id = ? AND deleted_at IS NULL",
+        [userId]
+      );
+      if (rows.length === 0) {
+        throw ErrEmployeeNotFound;
+      }
+      const employee = rows[0];
+      return new EmployeeEntity(
+        employee.id,
+        employee.user_id,
+        employee.fullname,
+        employee.position,
+        employee.department,
+        employee.phone
+      );
+    } catch (e) {
+      if (e === ErrEmployeeNotFound) {
+        throw e;
+      }
+      throw ErrInternalServer;
     }
   }
 }

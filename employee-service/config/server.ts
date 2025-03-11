@@ -1,4 +1,5 @@
 import { EmployeeController } from "../src/controller/employee.controller.js";
+import { AttendanceRepositoryImpl } from "../src/repository/attendance.repository.js";
 import { EmployeeRepositoryImpl } from "../src/repository/employee.repository.js";
 import { TransactionManagerImpl } from "../src/repository/transactor.js";
 import { UserRepositoryImpl } from "../src/repository/user.repository.js";
@@ -16,6 +17,7 @@ export async function startServer() {
       new EmployeeUsecaseImpl(
         new EmployeeRepositoryImpl(db),
         new UserRepositoryImpl(db),
+        new AttendanceRepositoryImpl(db),
         new TransactionManagerImpl(db)
       )
     )

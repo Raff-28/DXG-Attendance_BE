@@ -22,7 +22,7 @@ export function authenticate(requiredRole: Role) {
       if (response.data.data?.role !== requiredRole) {
         throw ErrUnauthorized;
       }
-      res.locals = { employeeId: response.data.data?.id };
+      res.locals = { userId: response.data.data?.id };
       next();
     } catch (e) {
       if (e instanceof HttpError) {

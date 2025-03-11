@@ -11,7 +11,7 @@ export function setupRouter(c: AttendanceController, upload: Multer): Express {
   r.use(express.json());
 
   r.post(
-    "/attendance",
+    "/attendances",
     authenticate("employee"),
     upload.single("photo"),
     validateData(postAttendanceSchema, true),

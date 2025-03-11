@@ -71,4 +71,29 @@ export class EmployeeController {
       }
     }
   }
+
+  async getEmployeeByUserId(req: Request, res: Response) {
+    try {
+      const { userId } = req.params;
+      const userIdNumber = parseInt(userId);
+      if (isNaN(userIdNumber)) {
+        throw ErrInvalidId;
+      }
+      const employee = await this.employeeUsecase.getEmployeeByUserId(
+        userIdNumber
+      );
+      const response: AppResponse<EmployeeResponseData> = {
+        data: employee.toDto(),
+      };
+      res.status(StatusCodes.OK).json(response);
+    } catch (e) {
+      if (e instanceof HttpError) {
+        res.status(e.status).send({ message: e.message });
+      } else {
+        res
+          .status(ErrInternalServer.status)
+          .json({ message: ErrInternalServer.message });
+      }
+    }
+  }
 }
