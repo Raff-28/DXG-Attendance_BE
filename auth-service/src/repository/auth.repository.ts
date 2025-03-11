@@ -41,7 +41,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     try {
       const conn = connection || this.db;
       const [rows] = await conn.execute<RowDataPacket[]>(
-        "SELECT 1 FROM users WHERE email = ? LIMIT 1",
+        "SELECT 1 FROM users WHERE email = ? AND deleted_at IS NULL LIMIT 1",
         [registerEntity.email]
       );
       return rows.length > 0;
@@ -96,7 +96,11 @@ export class AuthRepositoryImpl implements AuthRepository {
     try {
       const conn = connection || this.db;
       const [rows] = await conn.execute<UserModel[]>(
-        "SELECT id, email, password, role FROM users WHERE email = ? LIMIT 1",
+        `SELECT 
+          id, email, password, role
+         FROM users
+         WHERE email = ? AND deleted_at IS NULL
+         LIMIT 1`,
         [email]
       );
       if (rows.length === 0) {
@@ -116,7 +120,11 @@ export class AuthRepositoryImpl implements AuthRepository {
     try {
       const conn = connection || this.db;
       const [rows] = await conn.execute<UserModel[]>(
-        "SELECT id, email, password, role FROM users WHERE id = ? LIMIT 1",
+        `SELECT 
+          id, email, password, role
+         FROM users
+         WHERE id = ? AND deleted_at IS NULL
+         LIMIT 1`,
         [id]
       );
       if (rows.length === 0) {

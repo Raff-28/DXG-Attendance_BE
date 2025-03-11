@@ -19,7 +19,7 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const conn = connection || this.db;
       const [rows] = await conn.execute<RowDataPacket[]>(
-        "SELECT 1 FROM users WHERE id = ? LIMIT 1",
+        "SELECT 1 FROM users WHERE id = ? AND deleted_at IS NULL LIMIT 1",
         [id]
       );
       return rows.length > 0;
@@ -31,7 +31,9 @@ export class UserRepositoryImpl implements UserRepository {
   async deleteUser(id: number, connection?: PoolConnection): Promise<void> {
     try {
       const conn = connection || this.db;
-      await conn.execute("DELETE FROM users WHERE id = ?", [id]);
+      await conn.execute("UPDATE users SET deleted_at = NOW() WHERE id = ?", [
+        id,
+      ]);
     } catch (e) {
       throw e;
     }

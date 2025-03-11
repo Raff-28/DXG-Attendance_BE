@@ -61,8 +61,8 @@ export class EmployeeUsecaseImpl implements EmployeeUsecase {
         if (!userExists) {
           throw ErrUserNotFound;
         }
-        await this.employeeRepository.deleteEmployee(id, tx);
         await this.userRepository.deleteUser(employee.userId, tx);
+        await this.employeeRepository.deleteEmployee(id, tx);
         await this.attendanceRepository.deleteAttendancesByEmployeeId(id, tx);
       });
     } catch (e) {
