@@ -36,7 +36,7 @@ export class AttendanceController {
       res.status(StatusCodes.OK).json(result.toDto());
     } catch (e) {
       if (e instanceof HttpError) {
-        res.status(e.status).send({ message: e.message });
+        res.status(e.status).json({ message: e.message });
       } else if (
         axios.isAxiosError<AppResponse<void>>(e) &&
         e.response?.data.message

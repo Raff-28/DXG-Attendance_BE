@@ -20,7 +20,7 @@ export class EmployeeController {
       res.status(StatusCodes.OK).json(response);
     } catch (e) {
       if (e instanceof HttpError) {
-        res.status(e.status).send({ message: e.message });
+        res.status(e.status).json({ message: e.message });
       } else {
         res
           .status(ErrInternalServer.status)
@@ -43,7 +43,7 @@ export class EmployeeController {
       res.status(StatusCodes.OK).json(response);
     } catch (e) {
       if (e instanceof HttpError) {
-        res.status(e.status).send({ message: e.message });
+        res.status(e.status).json({ message: e.message });
       } else {
         res
           .status(ErrInternalServer.status)
@@ -63,7 +63,7 @@ export class EmployeeController {
       res.status(StatusCodes.NO_CONTENT).send();
     } catch (e) {
       if (e instanceof HttpError) {
-        res.status(e.status).send({ message: e.message });
+        res.status(e.status).json({ message: e.message });
       } else {
         res
           .status(ErrInternalServer.status)
@@ -88,7 +88,7 @@ export class EmployeeController {
       res.status(StatusCodes.OK).json(response);
     } catch (e) {
       if (e instanceof HttpError) {
-        res.status(e.status).send({ message: e.message });
+        res.status(e.status).json({ message: e.message });
       } else {
         res
           .status(ErrInternalServer.status)

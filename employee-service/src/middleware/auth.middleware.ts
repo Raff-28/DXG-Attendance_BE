@@ -26,14 +26,14 @@ export function authenticate(requiredRole: Role) {
       next();
     } catch (e) {
       if (e instanceof HttpError) {
-        res.status(e.status).send({ message: e.message });
+        res.status(e.status).json({ message: e.message });
       } else if (
         axios.isAxiosError<AppResponse<void>>(e) &&
         e.response?.data.message
       ) {
         res
           .status(e.response.status)
-          .send({ message: e.response.data.message });
+          .json({ message: e.response.data.message });
       } else {
         res
           .status(ErrInternalServer.status)
