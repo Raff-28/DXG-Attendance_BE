@@ -1,7 +1,9 @@
 import express, { Express } from "express";
 import { StatusCodes } from "http-status-codes";
 import { EmployeeController } from "../controller/employee.controller.js";
+import { putEmployeeSchema } from "../data/model/employee.schema.js";
 import { authenticate } from "../middleware/auth.middleware.js";
+import { validateData } from "../middleware/validation.middleware.js";
 
 export function setupRouter(employeeController: EmployeeController): Express {
   const r = express();
@@ -24,6 +26,7 @@ export function setupRouter(employeeController: EmployeeController): Express {
   r.put(
     "/employees/:id",
     authenticate("admin"),
+    validateData(putEmployeeSchema),
     employeeController.putEmployee.bind(employeeController)
   );
   r.delete(

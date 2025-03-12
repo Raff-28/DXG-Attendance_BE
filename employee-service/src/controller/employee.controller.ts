@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { z } from "zod";
 import {
   EmployeeResponseData,
   PutEmployeeRequestBody,
 } from "../data/dto/employee.dto.js";
 import { AppResponse } from "../data/dto/response.js";
+import { putEmployeeSchema } from "../data/model/employee.schema.js";
 import { ErrInternalServer, ErrInvalidId, HttpError } from "../errors/http.js";
 import { EmployeeUsecase } from "../usecase/employee.usecase.js";
 
@@ -101,7 +103,7 @@ export class EmployeeController {
   }
 
   async putEmployee(
-    req: Request<{ id: string }, {}, PutEmployeeRequestBody>,
+    req: Request<{ id: string }, {}, z.infer<typeof putEmployeeSchema>>,
     res: Response
   ) {
     try {
@@ -110,13 +112,7 @@ export class EmployeeController {
       if (isNaN(idNumber) || idNumber < 1) {
         throw ErrInvalidId;
       }
-      const reqBody = new PutEmployeeRequestBody(
-        req.body.full_name,
-        req.body.position,
-        req.body.department,
-        req.body.phone_number
-      );
-      reqBody.validate();
+      const reqBody = PutEmployeeRequestBody.fromSchema(req.body);
       const updateEmployeeEntity = reqBody.toEntity(idNumber);
       await this.employeeUsecase.updateEmployee(updateEmployeeEntity);
       res.status(StatusCodes.NO_CONTENT).send();
