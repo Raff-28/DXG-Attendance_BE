@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { Express } from "express";
 import { StatusCodes } from "http-status-codes";
 import { AuthController } from "../controller/auth.controller.js";
@@ -7,6 +8,7 @@ import { validateData } from "../middleware/validation.middleware.js";
 export function setupRouter(c: AuthController): Express {
   const r = express();
   r.use(express.json());
+  r.use(cors());
 
   r.post("/register", validateData(registerSchema), c.register.bind(c));
   r.post("/login", validateData(loginSchema), c.login.bind(c));
