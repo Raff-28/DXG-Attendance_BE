@@ -9,3 +9,7 @@ export interface AttendanceModel extends RowDataPacket {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface TotalResult extends RowDataPacket {
+  total: number;
+}

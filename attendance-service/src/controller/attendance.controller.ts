@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { GetAttendanceByUserRequestQuery } from "../data/dto/attendance.dto.js";
 import { EmployeeResponseData } from "../data/dto/employee.dto.js";
-import { AppResponse } from "../data/dto/response.js";
+import { AppResponse, PaginationInfo } from "../data/dto/response.js";
 import {
   AttendanceEntity,
   AttendanceQueryParamEntity,
@@ -81,7 +81,16 @@ export class AttendanceController {
       const result = await this.attendanceUsecase.getAttendancesByEmployee(
         reqQueryEntity
       );
-      res.status(StatusCodes.OK).json(result.map((r) => r.toGetDto()));
+      const attendancesResponse = result.attendances.map((r) => r.toGetDto());
+      const paginationResponse: PaginationInfo = {
+        page_number: reqQuery.page_number,
+        page_size: reqQuery.page_size,
+        total_pages: result.totalPages,
+      };
+      res.status(StatusCodes.OK).json({
+        attendances: attendancesResponse,
+        pagination_info: paginationResponse,
+      });
     } catch (e) {
       if (e instanceof HttpError) {
         res.status(e.status).json({ message: e.message });

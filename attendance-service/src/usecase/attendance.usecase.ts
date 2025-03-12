@@ -13,7 +13,7 @@ export interface AttendanceUsecase {
   ): Promise<AttendanceEntity>;
   getAttendancesByEmployee(
     attendanceQuery: AttendanceQueryParamEntity
-  ): Promise<AttendanceEntity[]>;
+  ): Promise<{ attendances: AttendanceEntity[]; totalPages: number }>;
 }
 
 export class AttendanceUsecaseImpl implements AttendanceUsecase {
@@ -67,11 +67,11 @@ export class AttendanceUsecaseImpl implements AttendanceUsecase {
 
   async getAttendancesByEmployee(
     attendanceQuery: AttendanceQueryParamEntity
-  ): Promise<AttendanceEntity[]> {
-    const attendances =
+  ): Promise<{ attendances: AttendanceEntity[]; totalPages: number }> {
+    const { attendances, totalPages } =
       await this.attendanceRepository.selectAttendancesByEmployee(
         attendanceQuery
       );
-    return attendances;
+    return { attendances, totalPages };
   }
 }

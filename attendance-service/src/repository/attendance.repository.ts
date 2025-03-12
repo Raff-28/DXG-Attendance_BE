@@ -8,7 +8,10 @@ import {
   AttendanceEntity,
   AttendanceQueryParamEntity,
 } from "../data/entity/attendance.entity.js";
-import { AttendanceModel } from "../data/model/attendance.model.js";
+import {
+  AttendanceModel,
+  TotalResult,
+} from "../data/model/attendance.model.js";
 import { ErrInternalServer } from "../errors/http.js";
 
 export interface AttendanceRepository {
@@ -23,7 +26,7 @@ export interface AttendanceRepository {
   selectAttendancesByEmployee(
     attendanceQuery: AttendanceQueryParamEntity,
     connection?: PoolConnection
-  ): Promise<AttendanceEntity[]>;
+  ): Promise<{ attendances: AttendanceEntity[]; totalPages: number }>;
 }
 
 export class AttendanceRepositoryImpl implements AttendanceRepository {
@@ -78,27 +81,36 @@ export class AttendanceRepositoryImpl implements AttendanceRepository {
   async selectAttendancesByEmployee(
     attendanceQuery: AttendanceQueryParamEntity,
     connection?: PoolConnection
-  ): Promise<AttendanceEntity[]> {
+  ): Promise<{ attendances: AttendanceEntity[]; totalPages: number }> {
     try {
       const conn = connection || this.db;
-      const [result] = await conn.query<AttendanceModel[]>(
+      const [rows] = await conn.query<AttendanceModel[]>(
         `SELECT
-            id, employee_id, timestamp, attendance_date, photo_url
-         FROM
-            attendances
-         WHERE
-            employee_id = ? AND deleted_at IS NULL
-         ORDER BY
-            timestamp DESC
-         LIMIT
-            ? OFFSET ?`,
+          id, employee_id, timestamp, attendance_date, photo_url
+       FROM
+          attendances
+       WHERE
+          employee_id = ? AND deleted_at IS NULL
+       ORDER BY
+          timestamp DESC
+       LIMIT ? OFFSET ?`,
         [
           attendanceQuery.employeeId,
           attendanceQuery.pageSize,
           (attendanceQuery.pageNumber - 1) * attendanceQuery.pageSize,
         ]
       );
-      return result.map((r) => {
+
+      const [countResult] = await conn.query<TotalResult[]>(
+        `SELECT COUNT(*) as total
+         FROM attendances
+         WHERE employee_id = ? AND deleted_at IS NULL`,
+        [attendanceQuery.employeeId]
+      );
+      const totalRecords = countResult[0]?.total ?? 0;
+      const totalPages = Math.ceil(totalRecords / attendanceQuery.pageSize);
+
+      const attendances = rows.map((r) => {
         return new AttendanceEntity(
           undefined,
           undefined,
@@ -108,6 +120,8 @@ export class AttendanceRepositoryImpl implements AttendanceRepository {
           r.timestamp
         );
       });
+
+      return { attendances, totalPages };
     } catch (e) {
       throw ErrInternalServer;
     }
