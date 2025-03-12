@@ -30,3 +30,8 @@ export const ErrInvalidId = new HttpError(
   StatusCodes.BAD_REQUEST,
   "Invalid id"
 );
+
+export const ErrInvalidBody = new HttpError(
+  StatusCodes.BAD_REQUEST,
+  "Invalid request body"
+);

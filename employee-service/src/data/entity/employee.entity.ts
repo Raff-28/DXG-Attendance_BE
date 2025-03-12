@@ -35,3 +35,25 @@ export class EmployeeEntity {
     );
   }
 }
+
+export class UpdateEmployeeEntity {
+  id: number;
+  fullName?: string;
+  position?: string;
+  department?: string;
+  phone?: string;
+
+  constructor(
+    id: number,
+    fullName?: string,
+    position?: string,
+    department?: string,
+    phone?: string
+  ) {
+    this.id = id;
+    this.fullName = fullName;
+    this.position = position;
+    this.department = department;
+    this.phone = phone;
+  }
+}

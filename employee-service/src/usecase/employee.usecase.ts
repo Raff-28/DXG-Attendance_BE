@@ -1,4 +1,7 @@
-import { EmployeeEntity } from "../data/entity/employee.entity.js";
+import {
+  EmployeeEntity,
+  UpdateEmployeeEntity,
+} from "../data/entity/employee.entity.js";
 import { ErrUserNotFound } from "../errors/http.js";
 import { AttendanceRepository } from "../repository/attendance.repository.js";
 import { EmployeeRepository } from "../repository/employee.repository.js";
@@ -10,6 +13,7 @@ export interface EmployeeUsecase {
   getEmployeeDetails(id: number): Promise<EmployeeEntity>;
   deleteEmployee(id: number): Promise<void>;
   getEmployeeByUserId(userId: number): Promise<EmployeeEntity>;
+  updateEmployee(employee: UpdateEmployeeEntity): Promise<void>;
 }
 
 export class EmployeeUsecaseImpl implements EmployeeUsecase {
@@ -76,6 +80,14 @@ export class EmployeeUsecaseImpl implements EmployeeUsecase {
         userId
       );
       return employee;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async updateEmployee(employee: UpdateEmployeeEntity): Promise<void> {
+    try {
+      await this.employeeRepository.updateEmployee(employee);
     } catch (e) {
       throw e;
     }

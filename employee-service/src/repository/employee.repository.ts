@@ -1,5 +1,8 @@
 import { Pool, PoolConnection } from "mysql2/promise";
-import { EmployeeEntity } from "../data/entity/employee.entity.js";
+import {
+  EmployeeEntity,
+  UpdateEmployeeEntity,
+} from "../data/entity/employee.entity.js";
 import { EmployeeModel } from "../data/model/employee.model.js";
 import { ErrEmployeeNotFound, ErrInternalServer } from "../errors/http.js";
 
@@ -14,6 +17,7 @@ export interface EmployeeRepository {
     userId: number,
     connection?: PoolConnection
   ): Promise<EmployeeEntity>;
+  updateEmployee(updateEmployeeEntity: UpdateEmployeeEntity): Promise<void>;
 }
 
 export class EmployeeRepositoryImpl implements EmployeeRepository {
@@ -116,6 +120,41 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
       if (e === ErrEmployeeNotFound) {
         throw e;
       }
+      throw ErrInternalServer;
+    }
+  }
+
+  async updateEmployee(
+    updateEmployeeEntity: UpdateEmployeeEntity
+  ): Promise<void> {
+    try {
+      const updates: string[] = [];
+      const values: any[] = [];
+
+      if (updateEmployeeEntity.fullName !== undefined) {
+        updates.push("fullname = ?");
+        values.push(updateEmployeeEntity.fullName);
+      }
+      if (updateEmployeeEntity.position !== undefined) {
+        updates.push("position = ?");
+        values.push(updateEmployeeEntity.position);
+      }
+      if (updateEmployeeEntity.department !== undefined) {
+        updates.push("department = ?");
+        values.push(updateEmployeeEntity.department);
+      }
+      if (updateEmployeeEntity.phone !== undefined) {
+        updates.push("phone = ?");
+        values.push(updateEmployeeEntity.phone);
+      }
+      if (updates.length === 0) {
+        return;
+      }
+
+      values.push(updateEmployeeEntity.id);
+      const query = `UPDATE employees SET ${updates.join(", ")} WHERE id = ?`;
+      await this.db.execute(query, values);
+    } catch (e) {
       throw ErrInternalServer;
     }
   }
