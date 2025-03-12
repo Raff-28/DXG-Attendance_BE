@@ -4,19 +4,22 @@ import { z, ZodError } from "zod";
 import { AppResponse } from "../data/dto/response.js";
 
 export function validateData(
-  schema: z.ZodObject<any, any>,
-  isFormData = false
+  bodySchema?: z.ZodObject<any, any>,
+  querySchema?: z.ZodObject<any, any>,
+  formDataSchema?: z.ZodObject<any, any>,
+  paramSchema?: z.ZodObject<any, any>
 ) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (isFormData) {
-        const data = {
-          photo: req.file,
-        };
-        req.body = schema.parse(data);
+      req.query = querySchema?.parse(req.query) || req.query;
+      req.params = paramSchema?.parse(req.params) || req.params;
+      if (formDataSchema) {
+        const data = { photo: req.file };
+        req.body = formDataSchema.parse(data);
       } else {
-        req.body = schema.parse(req.body);
+        req.body = bodySchema?.parse(req.body) || req.body;
       }
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {

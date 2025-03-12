@@ -14,3 +14,12 @@ export const postAttendanceSchema = z.object({
       }
     ),
 });
+
+export const getAttendancesByUserQuerySchema = z.object({
+  page_number: z.coerce.number().min(1).optional(),
+  page_size: z.coerce.number().min(1).max(50).optional(),
+});
+
+export const getAttendancesByUserParamSchema = z.object({
+  userId: z.coerce.number().min(1),
+});

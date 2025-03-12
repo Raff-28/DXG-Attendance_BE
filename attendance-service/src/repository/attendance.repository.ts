@@ -4,7 +4,11 @@ import {
   ResultSetHeader,
   RowDataPacket,
 } from "mysql2/promise";
-import { AttendanceEntity } from "../data/entity/attendance.entity.js";
+import {
+  AttendanceEntity,
+  AttendanceQueryParamEntity,
+} from "../data/entity/attendance.entity.js";
+import { AttendanceModel } from "../data/model/attendance.model.js";
 import { ErrInternalServer } from "../errors/http.js";
 
 export interface AttendanceRepository {
@@ -16,6 +20,10 @@ export interface AttendanceRepository {
     employeeId: number,
     connection?: PoolConnection
   ): Promise<boolean>;
+  selectAttendancesByEmployee(
+    attendanceQuery: AttendanceQueryParamEntity,
+    connection?: PoolConnection
+  ): Promise<AttendanceEntity[]>;
 }
 
 export class AttendanceRepositoryImpl implements AttendanceRepository {
@@ -62,6 +70,44 @@ export class AttendanceRepositoryImpl implements AttendanceRepository {
         [employeeId]
       );
       return result.length > 0;
+    } catch (e) {
+      throw ErrInternalServer;
+    }
+  }
+
+  async selectAttendancesByEmployee(
+    attendanceQuery: AttendanceQueryParamEntity,
+    connection?: PoolConnection
+  ): Promise<AttendanceEntity[]> {
+    try {
+      const conn = connection || this.db;
+      const [result] = await conn.query<AttendanceModel[]>(
+        `SELECT
+            id, employee_id, timestamp, attendance_date, photo_url
+         FROM
+            attendances
+         WHERE
+            employee_id = ? AND deleted_at IS NULL
+         ORDER BY
+            timestamp DESC
+         LIMIT
+            ? OFFSET ?`,
+        [
+          attendanceQuery.employeeId,
+          attendanceQuery.pageSize,
+          (attendanceQuery.pageNumber - 1) * attendanceQuery.pageSize,
+        ]
+      );
+      return result.map((r) => {
+        return new AttendanceEntity(
+          undefined,
+          undefined,
+          r.id,
+          r.employee_id,
+          r.photo_url,
+          r.timestamp
+        );
+      });
     } catch (e) {
       throw ErrInternalServer;
     }

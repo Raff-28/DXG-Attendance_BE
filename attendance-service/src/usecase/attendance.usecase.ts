@@ -1,5 +1,8 @@
 import { Cloudinary } from "../../pkg/cloudinary/cloudinary.js";
-import { AttendanceEntity } from "../data/entity/attendance.entity.js";
+import {
+  AttendanceEntity,
+  AttendanceQueryParamEntity,
+} from "../data/entity/attendance.entity.js";
 import { ErrAlreadyAttend } from "../errors/http.js";
 import { AttendanceRepository } from "../repository/attendance.repository.js";
 import { TransactionManager } from "../repository/transactor.js";
@@ -8,6 +11,9 @@ export interface AttendanceUsecase {
   createAttendance(
     attendanceEntity: AttendanceEntity
   ): Promise<AttendanceEntity>;
+  getAttendancesByEmployee(
+    attendanceQuery: AttendanceQueryParamEntity
+  ): Promise<AttendanceEntity[]>;
 }
 
 export class AttendanceUsecaseImpl implements AttendanceUsecase {
@@ -57,5 +63,15 @@ export class AttendanceUsecaseImpl implements AttendanceUsecase {
       throw e;
     }
     return attendanceEntity;
+  }
+
+  async getAttendancesByEmployee(
+    attendanceQuery: AttendanceQueryParamEntity
+  ): Promise<AttendanceEntity[]> {
+    const attendances =
+      await this.attendanceRepository.selectAttendancesByEmployee(
+        attendanceQuery
+      );
+    return attendances;
   }
 }
