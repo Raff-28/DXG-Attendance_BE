@@ -1,4 +1,4 @@
-import { Pool, PoolConnection } from "mysql2/promise";
+import { Pool, PoolConnection, RowDataPacket } from "mysql2/promise";
 import {
   EmployeeEntity,
   UpdateEmployeeEntity,
@@ -18,6 +18,7 @@ export interface EmployeeRepository {
     connection?: PoolConnection
   ): Promise<EmployeeEntity>;
   updateEmployee(updateEmployeeEntity: UpdateEmployeeEntity): Promise<void>;
+  checkEmployeeExist(id: number): Promise<boolean>;
 }
 
 export class EmployeeRepositoryImpl implements EmployeeRepository {
@@ -154,6 +155,18 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
       values.push(updateEmployeeEntity.id);
       const query = `UPDATE employees SET ${updates.join(", ")} WHERE id = ?`;
       await this.db.execute(query, values);
+    } catch (e) {
+      throw ErrInternalServer;
+    }
+  }
+
+  async checkEmployeeExist(id: number): Promise<boolean> {
+    try {
+      const [rows] = await this.db.execute<RowDataPacket[]>(
+        "SELECT 1 FROM employees WHERE id = ? AND deleted_at IS NULL",
+        [id]
+      );
+      return rows.length > 0;
     } catch (e) {
       throw ErrInternalServer;
     }

@@ -2,7 +2,7 @@ import {
   EmployeeEntity,
   UpdateEmployeeEntity,
 } from "../data/entity/employee.entity.js";
-import { ErrUserNotFound } from "../errors/http.js";
+import { ErrEmployeeNotFound, ErrUserNotFound } from "../errors/http.js";
 import { AttendanceRepository } from "../repository/attendance.repository.js";
 import { EmployeeRepository } from "../repository/employee.repository.js";
 import { TransactionManager } from "../repository/transactor.js";
@@ -87,6 +87,12 @@ export class EmployeeUsecaseImpl implements EmployeeUsecase {
 
   async updateEmployee(employee: UpdateEmployeeEntity): Promise<void> {
     try {
+      const employeeExists = await this.employeeRepository.checkEmployeeExist(
+        employee.id
+      );
+      if (!employeeExists) {
+        throw ErrEmployeeNotFound;
+      }
       await this.employeeRepository.updateEmployee(employee);
     } catch (e) {
       throw e;
