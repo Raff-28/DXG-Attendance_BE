@@ -37,7 +37,7 @@ export class AttendanceController {
       const result = await this.attendanceUsecase.createAttendance(
         attendanceEntity
       );
-      res.status(StatusCodes.OK).json(result.toPostDto());
+      res.status(StatusCodes.OK).json(result.toDto());
     } catch (e) {
       if (e instanceof HttpError) {
         res.status(e.status).json({ message: e.message });
@@ -81,7 +81,7 @@ export class AttendanceController {
       const result = await this.attendanceUsecase.getAttendancesByEmployee(
         reqQueryEntity
       );
-      const attendancesResponse = result.attendances.map((r) => r.toGetDto());
+      const attendancesResponse = result.attendances.map((r) => r.toDto());
       const paginationResponse: PaginationInfo = {
         page_number: reqQuery.page_number,
         page_size: reqQuery.page_size,

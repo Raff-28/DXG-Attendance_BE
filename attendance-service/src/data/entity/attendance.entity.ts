@@ -24,21 +24,12 @@ export class AttendanceEntity {
     this.timestamp = timestamp || new Date();
   }
 
-  toPostDto() {
+  toDto() {
     return new AttendanceResponseData(
       this.id,
       this.employeeId,
       this.photoUrl,
       new Date(this.timestamp.getTime() + 1000 * 60 * 60 * 7)
-    );
-  }
-
-  toGetDto() {
-    return new AttendanceResponseData(
-      this.id,
-      this.employeeId,
-      this.photoUrl,
-      this.timestamp
     );
   }
 }
