@@ -14,7 +14,7 @@ export function validateData(
       req.query = querySchema?.parse(req.query) || req.query;
       req.params = paramSchema?.parse(req.params) || req.params;
       if (formDataSchema) {
-        const data = { photo: req.file };
+        const data = { photo: req.file, ...req.body };
         req.body = formDataSchema.parse(data);
       } else {
         req.body = bodySchema?.parse(req.body) || req.body;

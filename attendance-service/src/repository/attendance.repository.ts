@@ -43,13 +43,15 @@ export class AttendanceRepositoryImpl implements AttendanceRepository {
       const conn = connection || this.db;
       const [result] = await conn.execute<ResultSetHeader>(
         `INSERT INTO 
-            attendances (employee_id, timestamp, attendance_date, photo_url)
+            attendances (employee_id, timestamp, attendance_date, photo_url, work_description, reason_for_wfh)
          VALUES
-            (?, ?, CURDATE(), ?)`,
+            (?, ?, CURDATE(), ?, ?, ?)`,
         [
           attendanceEntity.employeeId,
           attendanceEntity.timestamp,
           attendanceEntity.photoUrl,
+          attendanceEntity.workDescription,
+          attendanceEntity.reasonForWfh,
         ]
       );
 

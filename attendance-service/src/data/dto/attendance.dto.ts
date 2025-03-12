@@ -6,17 +6,23 @@ export class AttendanceResponseData {
   employee_id: number;
   photoUrl: string;
   timestamp: Date;
+  work_description: string;
+  reason_for_wfh: string;
 
   constructor(
     id: number,
     employee_id: number,
     photoUrl: string,
-    timestamp: Date
+    timestamp: Date,
+    work_description: string,
+    reason_for_wfh: string
   ) {
     this.id = id;
     this.employee_id = employee_id;
     this.photoUrl = photoUrl;
     this.timestamp = timestamp;
+    this.work_description = work_description;
+    this.reason_for_wfh = reason_for_wfh;
   }
 }
 

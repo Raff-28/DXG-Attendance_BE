@@ -1,7 +1,9 @@
 import axios from "axios";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { z } from "zod";
 import { GetAttendanceByUserRequestQuery } from "../data/dto/attendance.dto.js";
+import { postAttendanceSchema } from "../data/dto/attendance.schema.js";
 import { EmployeeResponseData } from "../data/dto/employee.dto.js";
 import { AppResponse, PaginationInfo } from "../data/dto/response.js";
 import {
@@ -17,11 +19,20 @@ export class AttendanceController {
     this.attendanceUsecase = attendanceUsecase;
   }
 
-  async postAttendance(req: Request, res: Response) {
+  async postAttendance(
+    req: Request<{}, {}, z.infer<typeof postAttendanceSchema>>,
+    res: Response
+  ) {
     try {
       const attendanceEntity = new AttendanceEntity(
         req.file!.buffer!,
-        req.body.photo.mimetype
+        req.body.photo.mimetype,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        req.body.work_description,
+        req.body.reason_for_wfh
       );
       const employeeRes = await axios.get<AppResponse<EmployeeResponseData>>(
         `${process.env.EMPLOYEE_SERVICE_BASE_URL}/employees/by-user/${res.locals.userId}`,

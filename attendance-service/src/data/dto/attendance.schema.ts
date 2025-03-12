@@ -13,6 +13,8 @@ export const postAttendanceSchema = z.object({
         message: "Photo must be an image file of type jpeg, jpg, or png",
       }
     ),
+  work_description: z.string().min(10),
+  reason_for_wfh: z.string().min(10),
 });
 
 export const getAttendancesByUserQuerySchema = z.object({

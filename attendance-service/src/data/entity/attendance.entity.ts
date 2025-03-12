@@ -7,6 +7,8 @@ export class AttendanceEntity {
   employeeId: number;
   photoUrl: string;
   timestamp: Date;
+  workDescription: string;
+  reasonForWfh: string;
 
   constructor(
     photo?: Buffer,
@@ -14,7 +16,9 @@ export class AttendanceEntity {
     id?: number,
     employeeId?: number,
     photoUrl?: string,
-    timestamp?: Date
+    timestamp?: Date,
+    workDescription?: string,
+    reasonForWfh?: string
   ) {
     this.photo = photo || Buffer.from("");
     this.mimeType = mimeType || "";
@@ -22,6 +26,8 @@ export class AttendanceEntity {
     this.employeeId = employeeId || 0;
     this.photoUrl = photoUrl || "";
     this.timestamp = timestamp || new Date();
+    this.workDescription = workDescription || "";
+    this.reasonForWfh = reasonForWfh || "";
   }
 
   toDto() {
@@ -29,7 +35,9 @@ export class AttendanceEntity {
       this.id,
       this.employeeId,
       this.photoUrl,
-      new Date(this.timestamp.getTime() + 1000 * 60 * 60 * 7)
+      new Date(this.timestamp.getTime() + 1000 * 60 * 60 * 7),
+      this.workDescription,
+      this.reasonForWfh
     );
   }
 }

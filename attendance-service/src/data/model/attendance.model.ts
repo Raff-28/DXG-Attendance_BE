@@ -6,6 +6,8 @@ export interface AttendanceModel extends RowDataPacket {
   timestamp: Date;
   attendance_date: Date;
   photo_url: string;
+  work_description: string;
+  reason_for_wfh: string;
   created_at: Date;
   updated_at: Date;
 }
