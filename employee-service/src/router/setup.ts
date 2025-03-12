@@ -6,9 +6,6 @@ import { authenticate } from "../middleware/auth.middleware.js";
 export function setupRouter(employeeController: EmployeeController): Express {
   const r = express();
   r.use(express.json());
-  r.use((_req, res) => {
-    res.status(StatusCodes.NOT_FOUND).json({ message: "404 Not Found" });
-  });
 
   r.get(
     "/employees",
@@ -29,5 +26,9 @@ export function setupRouter(employeeController: EmployeeController): Express {
     authenticate("admin"),
     employeeController.deleteEmployee.bind(employeeController)
   );
+
+  r.use((_req, res) => {
+    res.status(StatusCodes.NOT_FOUND).json({ message: "404 Not Found" });
+  });
   return r;
 }

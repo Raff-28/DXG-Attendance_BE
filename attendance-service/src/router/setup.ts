@@ -14,9 +14,6 @@ export function setupRouter(c: AttendanceController, upload: Multer): Express {
   const r = express();
   r.use(express.urlencoded({ extended: true }));
   r.use(express.json());
-  r.use((_req, res) => {
-    res.status(StatusCodes.NOT_FOUND).json({ message: "404 Not Found" });
-  });
 
   r.post(
     "/attendances",
@@ -37,5 +34,9 @@ export function setupRouter(c: AttendanceController, upload: Multer): Express {
     ),
     c.getAttendancesByUser.bind(c)
   );
+
+  r.use((_req, res) => {
+    res.status(StatusCodes.NOT_FOUND).json({ message: "404 Not Found" });
+  });
   return r;
 }
