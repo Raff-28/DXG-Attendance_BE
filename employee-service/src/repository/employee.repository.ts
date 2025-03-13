@@ -100,7 +100,6 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
         employee.email
       );
     } catch (e) {
-      console.error(e);
       if (e === ErrEmployeeNotFound) {
         throw e;
       }
