@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 export class HttpError extends Error {
   constructor(public status: number, message: string) {
@@ -14,4 +14,9 @@ export const ErrTokenNotProvided = new HttpError(
 export const ErrInvalidToken = new HttpError(
   StatusCodes.UNAUTHORIZED,
   "Invalid token"
+);
+
+export const ErrForbidden = new HttpError(
+  StatusCodes.FORBIDDEN,
+  ReasonPhrases.FORBIDDEN
 );
