@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { Express } from "express";
 import { StatusCodes } from "http-status-codes";
 import { EmployeeController } from "../controller/employee.controller.js";
@@ -8,6 +9,7 @@ import { validateData } from "../middleware/validation.middleware.js";
 export function setupRouter(employeeController: EmployeeController): Express {
   const r = express();
   r.use(express.json());
+  r.use(cors());
 
   r.get(
     "/employees",
