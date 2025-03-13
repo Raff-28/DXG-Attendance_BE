@@ -7,6 +7,7 @@ export class EmployeeEntity {
   position: string;
   department: string;
   phone: string;
+  email: string;
 
   constructor(
     id: number,
@@ -14,7 +15,8 @@ export class EmployeeEntity {
     fullName: string,
     position: string,
     department: string,
-    phone: string
+    phone: string,
+    email: string
   ) {
     this.id = id;
     this.userId = userId;
@@ -22,6 +24,7 @@ export class EmployeeEntity {
     this.position = position;
     this.department = department;
     this.phone = phone;
+    this.email = email;
   }
 
   toDto() {
@@ -31,7 +34,8 @@ export class EmployeeEntity {
       this.fullName,
       this.position,
       this.department,
-      this.phone
+      this.phone,
+      this.email
     );
   }
 }

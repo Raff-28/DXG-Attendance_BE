@@ -10,3 +10,7 @@ export interface EmployeeModel extends RowDataPacket {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface EmployeeModelWithUser extends EmployeeModel {
+  email: string;
+}

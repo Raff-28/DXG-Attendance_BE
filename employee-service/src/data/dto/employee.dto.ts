@@ -46,13 +46,15 @@ export class EmployeeResponseData {
   position: string;
   department: string;
   phone_number: string;
+  email: string;
   constructor(
     id: number,
     user_id: number,
     full_name: string,
     position: string,
     department: string,
-    phone_number: string
+    phone_number: string,
+    email: string
   ) {
     this.id = id;
     this.user_id = user_id;
@@ -60,5 +62,6 @@ export class EmployeeResponseData {
     this.position = position;
     this.department = department;
     this.phone_number = phone_number;
+    this.email = email;
   }
 }

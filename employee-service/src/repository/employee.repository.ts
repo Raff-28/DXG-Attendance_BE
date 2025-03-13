@@ -3,7 +3,7 @@ import {
   EmployeeEntity,
   UpdateEmployeeEntity,
 } from "../data/entity/employee.entity.js";
-import { EmployeeModel } from "../data/model/employee.model.js";
+import { EmployeeModelWithUser } from "../data/model/employee.model.js";
 import { ErrEmployeeNotFound, ErrInternalServer } from "../errors/http.js";
 
 export interface EmployeeRepository {
@@ -32,8 +32,19 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
   ): Promise<EmployeeEntity[]> {
     try {
       const conn = connection || this.db;
-      const [rows] = await conn.execute<EmployeeModel[]>(
-        "SELECT * FROM employees WHERE deleted_at IS NULL"
+      const [rows] = await conn.execute<EmployeeModelWithUser[]>(
+        `
+          SELECT 
+            e.id, e.user_id, e.fullname, e.position, e.department, e.phone, u.email
+          FROM
+            employees e
+          JOIN
+            users u
+          ON
+            e.user_id = u.id
+          WHERE
+            e.deleted_at IS NULL AND u.deleted_at IS NULL
+        `
       );
       const employees = rows.map(
         (employee) =>
@@ -43,7 +54,8 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
             employee.fullname,
             employee.position,
             employee.department,
-            employee.phone
+            employee.phone,
+            employee.email
           )
       );
       return employees;
@@ -58,8 +70,19 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
   ): Promise<EmployeeEntity> {
     try {
       const conn = connection || this.db;
-      const [rows] = await conn.execute<EmployeeModel[]>(
-        "SELECT * FROM employees WHERE id = ? AND deleted_at IS NULL",
+      const [rows] = await conn.execute<EmployeeModelWithUser[]>(
+        `
+          SELECT
+            e.id, e.user_id, e.fullname, e.position, e.department, e.phone, u.email
+          FROM
+            employees e
+          JOIN
+            users u
+          ON
+            e.user_id = u.id
+          WHERE
+            e.id = ? AND e.deleted_at IS NULL AND u.deleted_at IS NULL
+        `,
         [id]
       );
       if (rows.length === 0) {
@@ -73,9 +96,11 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
         employee.fullname,
         employee.position,
         employee.department,
-        employee.phone
+        employee.phone,
+        employee.email
       );
     } catch (e) {
+      console.error(e);
       if (e === ErrEmployeeNotFound) {
         throw e;
       }
@@ -101,8 +126,19 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
   ): Promise<EmployeeEntity> {
     try {
       const conn = connection || this.db;
-      const [rows] = await conn.execute<EmployeeModel[]>(
-        "SELECT * FROM employees WHERE user_id = ? AND deleted_at IS NULL",
+      const [rows] = await conn.execute<EmployeeModelWithUser[]>(
+        `
+          SELECT
+            e.id, e.user_id, e.fullname, e.position, e.department, e.phone, u.email
+          FROM
+            employees e
+          JOIN
+            users u
+          ON
+            e.user_id = u.id
+          WHERE
+            e.user_id = ? AND e.deleted_at IS NULL AND u.deleted_at IS NULL
+        `,
         [userId]
       );
       if (rows.length === 0) {
@@ -115,7 +151,8 @@ export class EmployeeRepositoryImpl implements EmployeeRepository {
         employee.fullname,
         employee.position,
         employee.department,
-        employee.phone
+        employee.phone,
+        employee.email
       );
     } catch (e) {
       if (e === ErrEmployeeNotFound) {
