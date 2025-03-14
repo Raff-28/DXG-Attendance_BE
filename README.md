@@ -4,6 +4,9 @@ This project consists of web services for a WFH attendance application in the hy
 
 The app also provides an admin panel for HRD admins to view employee's data, update or delete them, as well as checking their WFH attendance history (view-only). An admin can also register a new employee into the system.
 
+The deployed version of the app can found in the following url:
+https://dxg-attendance-fe.vercel.app
+
 ## How to run locally
 
 The app is divided into three different microservices based on their domains. First, setup the database by following [this](db-setup/README.md) guide.
