@@ -30,7 +30,7 @@ CREATE TABLE attendances (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME NULL,
-    FOREIGN KEY (employee_id) REFERENCES employees (id) 
+    FOREIGN KEY (employee_id) REFERENCES employees (id),
     CONSTRAINT unique_daily_attendance UNIQUE (employee_id, attendance_date)
 );
 
