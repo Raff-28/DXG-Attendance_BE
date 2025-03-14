@@ -4,7 +4,7 @@ import { getAttendancesByUserQuerySchema } from "./attendance.schema.js";
 export class AttendanceResponseData {
   id: number;
   employee_id: number;
-  photoUrl: string;
+  photo_url: string;
   timestamp: Date;
   work_description: string;
   reason_for_wfh: string;
@@ -19,7 +19,7 @@ export class AttendanceResponseData {
   ) {
     this.id = id;
     this.employee_id = employee_id;
-    this.photoUrl = photoUrl;
+    this.photo_url = photoUrl;
     this.timestamp = timestamp;
     this.work_description = work_description;
     this.reason_for_wfh = reason_for_wfh;
