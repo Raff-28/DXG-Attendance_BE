@@ -6,8 +6,10 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": {
-    "src": "/(.*)",
-    "dest": "/out/cmd/app.js"
-  }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/out/cmd/app.js"
+    }
+  ]
 }
