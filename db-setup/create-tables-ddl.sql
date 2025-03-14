@@ -27,6 +27,8 @@ CREATE TABLE attendances (
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     attendance_date DATE NOT NULL,
     photo_url TEXT NOT NULL,
+    work_description TEXT NOT NULL,
+    reason_for_wfh TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME NULL,
