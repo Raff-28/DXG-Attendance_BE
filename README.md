@@ -12,4 +12,4 @@ After that, setup each of the services individually by following the respective 
 
 1. [Auth Service](auth-service/README.md)
 2. [Employee Service](employee-service/README.md)
-3. Attendance Service
+3. [Attendance Service](attendance-service/README.md)

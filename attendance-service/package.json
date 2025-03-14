@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec node --loader ts-node/esm cmd/app.ts"
+    "dev": "nodemon --exec node --loader ts-node/esm cmd/app.ts",
+    "build": "tsc",
+    "start": "node out/cmd/app.js"
   },
   "devDependencies": {
     "@cloudinary-util/types": "^1.6.0",
