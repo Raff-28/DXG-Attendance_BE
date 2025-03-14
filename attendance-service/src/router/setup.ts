@@ -1,3 +1,4 @@
+import cors from "cors";
 import express, { Express } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Multer } from "multer";
@@ -12,6 +13,7 @@ import { validateData } from "../middleware/validation.middleware.js";
 
 export function setupRouter(c: AttendanceController, upload: Multer): Express {
   const r = express();
+  r.use(cors());
   r.use(express.urlencoded({ extended: true }));
   r.use(express.json());
 

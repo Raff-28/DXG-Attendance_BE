@@ -8,8 +8,8 @@ import { validateData } from "../middleware/validation.middleware.js";
 
 export function setupRouter(employeeController: EmployeeController): Express {
   const r = express();
-  r.use(express.json());
   r.use(cors());
+  r.use(express.json());
 
   r.get(
     "/employees",
