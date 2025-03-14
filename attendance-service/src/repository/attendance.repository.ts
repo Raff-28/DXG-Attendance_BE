@@ -88,7 +88,7 @@ export class AttendanceRepositoryImpl implements AttendanceRepository {
       const conn = connection || this.db;
       const [rows] = await conn.query<AttendanceModel[]>(
         `SELECT
-          id, employee_id, timestamp, attendance_date, photo_url
+          id, employee_id, timestamp, attendance_date, photo_url, work_description, reason_for_wfh
        FROM
           attendances
        WHERE
@@ -119,7 +119,9 @@ export class AttendanceRepositoryImpl implements AttendanceRepository {
           r.id,
           r.employee_id,
           r.photo_url,
-          r.timestamp
+          r.timestamp,
+          r.work_description,
+          r.reason_for_wfh
         );
       });
 
