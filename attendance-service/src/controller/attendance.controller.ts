@@ -2,7 +2,10 @@ import axios from "axios";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
-import { GetAttendanceByUserRequestQuery } from "../data/dto/attendance.dto.js";
+import {
+  AttendanceResponseData,
+  GetAttendanceByUserRequestQuery,
+} from "../data/dto/attendance.dto.js";
 import { postAttendanceSchema } from "../data/dto/attendance.schema.js";
 import { EmployeeResponseData } from "../data/dto/employee.dto.js";
 import { AppResponse, PaginationInfo } from "../data/dto/response.js";
@@ -98,10 +101,16 @@ export class AttendanceController {
         page_size: reqQuery.page_size,
         total_pages: result.totalPages,
       };
-      res.status(StatusCodes.OK).json({
-        attendances: attendancesResponse,
-        pagination_info: paginationResponse,
-      });
+      const response: AppResponse<{
+        attendances: AttendanceResponseData[];
+        pagination_info: PaginationInfo;
+      }> = {
+        data: {
+          attendances: attendancesResponse,
+          pagination_info: paginationResponse,
+        },
+      };
+      res.status(StatusCodes.OK).json(response);
     } catch (e) {
       if (e instanceof HttpError) {
         res.status(e.status).json({ message: e.message });
