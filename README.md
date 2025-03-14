@@ -10,6 +10,6 @@ The app is divided into three different microservices based on their domains. Fi
 
 After that, setup each of the services individually by following the respective guides.
 
-1. Auth Service
-2. Employee Service
+1. [Auth Service](auth-service/README.md)
+2. [Employee Service](employee-service/README.md)
 3. Attendance Service
