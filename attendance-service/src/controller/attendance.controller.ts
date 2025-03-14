@@ -51,7 +51,10 @@ export class AttendanceController {
       const result = await this.attendanceUsecase.createAttendance(
         attendanceEntity
       );
-      res.status(StatusCodes.OK).json(result.toDto());
+      const response: AppResponse<AttendanceResponseData> = {
+        data: result.toDto(),
+      };
+      res.status(StatusCodes.OK).json(response);
     } catch (e) {
       if (e instanceof HttpError) {
         res.status(e.status).json({ message: e.message });
